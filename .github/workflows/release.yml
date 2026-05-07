@@ -1,0 +1,89 @@
+name: Release package
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        default: false
+        description: Simulate the release without pushing commits or tags.
+        required: true
+        type: boolean
+      release_type:
+        default: patch
+        description: Version increment to apply.
+        options:
+          - patch
+          - minor
+          - major
+        required: true
+        type: choice
+
+concurrency:
+  cancel-in-progress: false
+  group: release-${{ github.ref_name }}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Ensure release branch is allowed
+        run: |
+          case "${GITHUB_REF_NAME}" in
+            main|master) ;;
+            *)
+              echo "Manual releases must run from main or master, got ${GITHUB_REF_NAME}."
+              exit 1
+              ;;
+          esac
+
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.10
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Configure authenticated remote for release pushes
+        if: ${{ !inputs.dry_run }}
+        env:
+          RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          if [ -z "$RELEASE_TOKEN" ]; then
+            echo "RELEASE_TOKEN secret is required for non-dry-run releases."
+            echo "Pushes made with GITHUB_TOKEN do not trigger the publish workflow."
+            exit 1
+          fi
+
+          git remote set-url origin "https://x-access-token:${RELEASE_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+      - name: Configure Git author
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Run release-it
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+          RELEASE_TYPE: ${{ inputs.release_type }}
+        run: |
+          set -euo pipefail
+
+          command=(bun --cwd packages/android-reverse-tcp ../../node_modules/.bin/release-it --ci)
+
+          if [ "$DRY_RUN" = "true" ]; then
+            command+=(--dry-run)
+          fi
+
+          command+=("$RELEASE_TYPE")
+
+          "${command[@]}"
