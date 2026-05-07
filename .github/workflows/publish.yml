@@ -36,14 +36,8 @@ jobs:
           }
           '
 
-      - name: Build package
-        run: bun run build
-
-      - name: Run tests
-        run: bun run test
-
-      - name: Run type checks
-        run: bun run typecheck
+      - name: Run workspace checks
+        run: bun run check
 
       - name: Configure npm authentication
         run: |
@@ -56,4 +50,3 @@ jobs:
         run: bun publish --access public
         env:
           NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}
-

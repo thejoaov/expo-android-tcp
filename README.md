@@ -25,6 +25,8 @@ bun install
 bun run build
 bun run lint
 bun run format
+bun run release
+bun run release:dry-run
 bun run test
 bun run typecheck
 bun run check
@@ -63,9 +65,21 @@ for every configured port before the app launch step continues.
 The plugin package is built with `tsdown` and emits:
 
 - ESM output
-- CommonJS output
 - declaration files
 - sourcemaps
 - minified bundles
 
-CI runs on pushes and pull requests. Publishing is handled by GitHub Actions when a tag matching the package version (for example `v1.0.0`) is pushed.
+Releases are versioned with `release-it` from the repo root:
+
+```bash
+bun run release
+```
+
+That command:
+
+- runs the shared root `check` pipeline before changing anything
+- bumps `packages/android-reverse-tcp/package.json`
+- refreshes `bun.lock`
+- creates and pushes a Git commit and tag such as `v1.0.0`
+
+Publishing is still handled by GitHub Actions after the matching tag is pushed, so the repo keeps the established Bun/Turbo/tsdown workflow while gaining a more organized release flow.

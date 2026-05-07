@@ -15,8 +15,9 @@
     "format": "biome format --write .",
     "ios": "turbo run ios --filter=expo-reverse-tcp-demo",
     "lint": "biome check .",
-    "publish:npm": "bun run ./scripts/publish.ts",
     "prepare": "lefthook install",
+    "release": "bun --cwd packages/android-reverse-tcp ../../node_modules/.bin/release-it",
+    "release:dry-run": "bun --cwd packages/android-reverse-tcp ../../node_modules/.bin/release-it --dry-run",
     "start": "turbo run start --filter=expo-reverse-tcp-demo",
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
@@ -26,6 +27,7 @@
     "@biomejs/biome": "^2.4.14",
     "@types/node": "^25.6.0",
     "lefthook": "^2.1.6",
+    "release-it": "^20.0.1",
     "turbo": "^2.9.9",
     "typescript": "^6.0.3"
   }

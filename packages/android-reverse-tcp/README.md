@@ -40,7 +40,6 @@ after a successful local Android install task and before the CLI proceeds to lau
 The published package ships:
 
 - ESM entry points
-- CommonJS entry points
 - generated type declarations
 - minified output
 - sourcemaps

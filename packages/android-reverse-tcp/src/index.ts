@@ -1,3 +1,5 @@
+import { createRequire } from "node:module";
+
 import type { ConfigPlugin } from "@expo/config-plugins";
 import * as configPluginsModule from "@expo/config-plugins";
 
@@ -11,11 +13,12 @@ const configPlugins =
     }
   ).default ?? (configPluginsModule as typeof import("@expo/config-plugins"));
 
-const { createRunOncePlugin, withAppBuildGradle } = configPlugins;
+const require = createRequire(import.meta.url);
 
-const pkg = {
-  name: "expo-reverse-tcp",
-  version: "0.1.0",
+const { createRunOncePlugin, withAppBuildGradle } = configPlugins;
+const pkg = require("../package.json") as {
+  name: string;
+  version: string;
 };
 
 const withAndroidReverseTcp: ConfigPlugin<AndroidReverseTcpPluginProps> = (

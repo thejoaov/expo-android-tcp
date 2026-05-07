@@ -18,11 +18,16 @@
     "app.plugin.js",
     "README.md"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsdown",
     "format": "biome format --write .",
     "lint": "biome check .",
     "prepublishOnly": "bun run build",
+    "release": "release-it",
+    "release:ci": "release-it --ci",
     "test": "bun test",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/release-it@20/schema/release-it.json",
+  "git": {
+    "commitMessage": "chore(release): ${name} v${version}",
+    "push": true,
+    "requireBranch": ["main", "master"],
+    "tagAnnotation": "${name} v${version}",
+    "tagName": "v${version}"
+  },
+  "github": false,
+  "hooks": {
+    "after:bump": "bun --cwd ../.. install --lockfile-only",
+    "before:init": "bun --cwd ../.. run check"
+  },
+  "npm": {
+    "publish": false
+  }
+}
