@@ -1,47 +1,37 @@
-# expo-reverse-tcp monorepo
+# expo-reverse-tcp
 
-This repository contains the publishable `expo-reverse-tcp` Expo config plugin and a demo Expo app used to validate the Android reverse TCP flow locally.
+Monorepo for the `expo-reverse-tcp` Expo config plugin and its companion demo application.
 
-## Workspace layout
+The project focuses on one job and does it well: making local Android development with Expo less annoying by automatically wiring `adb reverse` for the TCP ports your app needs during local install flows.
 
-- `packages/android-reverse-tcp`: source for the `expo-reverse-tcp` npm package.
-- `app/app`: Expo demo app wired to the local workspace package.
+## Overview
 
-## Requirements
+This repository contains two closely related workspaces:
 
-- Bun
-- Android SDK with `adb`
-- A connected Android emulator or device
+- the publishable `expo-reverse-tcp` package
+- an Expo demo app used to validate the plugin end to end in a real Android project
 
-## Install
+The plugin injects Android Gradle logic so that, during local install tasks, each configured TCP port is reversed through `adb` before the app launch continues.
+
+## Why this repository exists
+
+Local mobile development often depends on services running on the host machine, such as Metro, local APIs, or mock backends. On Android, that usually means remembering to run a series of `adb reverse` commands manually.
+
+`expo-reverse-tcp` turns that repetitive setup into configuration.
+
+Instead of manually running:
 
 ```bash
-bun install
+adb reverse tcp:3000 tcp:3000
+adb reverse tcp:3001 tcp:3001
+adb reverse tcp:3002 tcp:3002
 ```
 
-## Main commands
+the plugin generates the necessary Gradle integration from your Expo config.
 
-```bash
-bun run build
-bun run lint
-bun run format
-bun run release
-bun run release:dry-run
-bun run test
-bun run typecheck
-bun run check
-bun run android
-```
+## How it works
 
-## Tooling
-
-- `turbo` orchestrates workspace tasks from the repo root, so the root scripts no longer rely on `cd app/app` or `cd packages/...` hops.
-- `biome` is configured as the shared formatter and linter for the monorepo.
-- `lefthook` installs a `pre-commit` hook that formats staged supported files with Biome before each commit is finalized.
-
-## Plugin usage
-
-The demo app configures the plugin in `app/app/app.json`:
+The demo app configures the plugin in `app/app/app.json` like this:
 
 ```json
 [
@@ -58,32 +48,83 @@ When the generated Android project runs a local install task such as `installDeb
 adb reverse tcp:{port} tcp:{port}
 ```
 
-for every configured port before the app launch step continues.
+for each configured port.
 
-## Package build and publish
+This keeps the setup close to the app configuration instead of scattering one-off shell commands across local development notes or muscle memory.
 
-The plugin package is built with `tsdown` and emits:
+## Development requirements
 
-- ESM output
-- declaration files
-- sourcemaps
-- minified bundles
+To work on this repository locally, you should have:
 
-Releases are versioned with `release-it` from the repo root, using the shared config in `/.release-it.json`:
+- Bun
+- Android SDK with `adb` available
+- an Android emulator or physical Android device for validation
+
+## Getting started
+
+Install dependencies from the repository root:
 
 ```bash
-bun run release
+bun install
 ```
 
-That command:
+## Common commands
 
-- runs the shared root `check` pipeline before changing anything
-- bumps `packages/android-reverse-tcp/package.json`
-- refreshes `bun.lock`
-- creates and pushes a Git commit and tag such as `v1.0.0`
+All primary workflows are exposed from the repository root.
 
-There is also a dedicated GitHub Actions workflow with `workflow_dispatch` for maintainers who prefer releasing from the Actions UI. That workflow runs `release-it`, creates and pushes the version commit and tag, and publishes the package in the same run.
+| Command                   | Description                                            |
+| ------------------------- | ------------------------------------------------------ |
+| `bun run build`           | Builds workspace packages through Turborepo.           |
+| `bun run build:plugin`    | Builds only the `expo-reverse-tcp` package.            |
+| `bun run lint`            | Runs Biome checks across the repository.               |
+| `bun run format`          | Formats the repository with Biome.                     |
+| `bun run test`            | Runs package tests through Turborepo.                  |
+| `bun run typecheck`       | Runs TypeScript typechecking across workspaces.        |
+| `bun run check`           | Runs lint, build, test, and typecheck in sequence.     |
+| `bun run android`         | Starts the Android workflow for the demo app.          |
+| `bun run android:clean`   | Runs the demo app Android clean workflow.              |
+| `bun run start`           | Starts the demo app workspace task.                    |
+| `bun run web`             | Runs the demo app web workflow.                        |
+| `bun run release`         | Starts the release flow for the publishable package.   |
+| `bun run release:dry-run` | Simulates the release flow without publishing changes. |
 
-The package is configured to use npm Trusted Publishers (OIDC) with `.github/workflows/release.yml`, so non-dry-run releases from GitHub Actions do not require an `NPM_TOKEN`. The workflow requests `id-token: write`, sets up Node.js 24+, upgrades npm, and publishes with `npm publish`.
+## Tooling and quality gates
 
-The separate tag workflow validates `v*` tags pushed from outside GitHub Actions. Because npm Trusted Publishers are configured for `release.yml`, that tag workflow does not publish to npm.
+The repository is intentionally organized around a small set of shared tools:
+
+- `turbo` orchestrates workspace-aware tasks from the root
+- `biome` provides formatting and linting
+- `lefthook` installs the pre-commit hook used for consistent formatting before commits
+- `tsdown` builds the publishable plugin package
+- `release-it` manages versioning, tagging, and release automation
+
+## Demo app
+
+The Expo demo app exists to validate the plugin against a realistic local development setup. Its configuration lives in `app/app/app.json`, where the plugin is registered and test ports are declared.
+
+This gives the repository a practical feedback loop: the same codebase contains both the distributable plugin and a consumer application used to verify behavior.
+
+## Use the published package
+
+If you only want to consume the plugin in another Expo project, install the package directly:
+
+```bash
+bun add expo-reverse-tcp
+```
+
+Then add it to your Expo config with the ports you need.
+
+```json
+{
+  "expo": {
+    "plugins": [
+      [
+        "expo-reverse-tcp",
+        {
+          "ports": [3000, 3001, 3002]
+        }
+      ]
+    ]
+  }
+}
+```
