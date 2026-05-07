@@ -76,7 +76,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          command=(bun --cwd packages/android-reverse-tcp ../../node_modules/.bin/release-it --ci)
+          command=(bun --cwd packages/android-reverse-tcp ../../node_modules/.bin/release-it --config ../../.release-it.json --ci)
 
           if [ "$DRY_RUN" = "true" ]; then
             command+=(--dry-run)

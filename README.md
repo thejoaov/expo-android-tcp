@@ -69,7 +69,7 @@ The plugin package is built with `tsdown` and emits:
 - sourcemaps
 - minified bundles
 
-Releases are versioned with `release-it` from the repo root:
+Releases are versioned with `release-it` from the repo root, using the shared config in `/.release-it.json`:
 
 ```bash
 bun run release

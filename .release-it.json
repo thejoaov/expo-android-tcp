@@ -9,7 +9,7 @@
   },
   "github": false,
   "hooks": {
-    "after:bump": "bun --cwd ../.. install --lockfile-only",
+    "after:bump": "bun install --cwd ../.. --lockfile-only",
     "before:init": "bun --cwd ../.. run check"
   },
   "npm": {
