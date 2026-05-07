@@ -1,0 +1,99 @@
+{
+  "emmet.showExpandedAbbreviation": "never",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "colorize.languages": ["javascript", "typescript"],
+  "tailwindCSS.experimental.configFile": "./packages/theme/dist/theme.css",
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["className\\s*=\\\"([^\\\"]*)\\\"", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    ["twMerge\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
+    [
+      "contentContainerClassName\\s*=\\\"([^\\\"]*)\\\"",
+      "(?:'|\"|`)([^']*)(?:'|\"|`)"
+    ],
+    ["containerClassName\\s*=\\\"([^\\\"]*)\\\"", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+  ],
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "next/router.d.ts",
+    "next/dist/client/router.d.ts"
+  ],
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/.expo": true,
+    "**/.git": true,
+    "**/.next": true,
+    "**/.temp": false,
+    "**/.turbo": true,
+    "**/node_modules": true
+  },
+  "biome.enabled": true,
+  "editor.codeActionsOnSave": {
+    "source.biome": "explicit",
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome",
+    "biome.enabled": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.biome": "explicit"
+    }
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome",
+    "biome.enabled": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.biome": "explicit"
+    }
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "biomejs.biome",
+    "biome.enabled": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.biome": "explicit"
+    }
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome",
+    "biome.enabled": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.biome": "explicit"
+    }
+  },
+  "[css]": {
+    "editor.defaultFormatter": "biomejs.biome",
+    "biome.enabled": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.biome": "explicit"
+    }
+  },
+  "chat.mcp.serverSampling": {
+    "knowlie/.cursor/mcp.json: context7": {
+      "allowedModels": [
+        "copilot/auto",
+        "copilotcli/claude-opus-4.6",
+        "claude-code/claude-opus-4.6",
+        "copilot/claude-opus-4.6",
+        "copilotcli/claude-sonnet-4.6",
+        "claude-code/claude-sonnet-4.6",
+        "copilot/claude-sonnet-4.6",
+        "copilot/gemini-3.1-pro-preview",
+        "copilot/gpt-5.4"
+      ]
+    }
+  }
+}

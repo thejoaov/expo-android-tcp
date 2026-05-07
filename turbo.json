@@ -1,0 +1,45 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["biome.jsonc", "package.json", "tsconfig.base.json"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "lint": {
+      "outputs": []
+    },
+    "test": {
+      "outputs": []
+    },
+    "typecheck": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "format": {
+      "cache": false
+    },
+    "start": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "web": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
+    "android": {
+      "dependsOn": ["^build"],
+      "cache": false
+    },
+    "android:clean": {
+      "dependsOn": ["^build"],
+      "cache": false
+    },
+    "ios": {
+      "dependsOn": ["^build"],
+      "cache": false
+    }
+  }
+}

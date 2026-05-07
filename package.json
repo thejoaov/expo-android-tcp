@@ -1,0 +1,31 @@
+{
+  "name": "expo-reverse-tcp-monorepo",
+  "private": true,
+  "packageManager": "bun@1.3.10",
+  "workspaces": [
+    "app/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "android": "turbo run android --filter=expo-reverse-tcp-demo",
+    "android:clean": "turbo run android:clean --filter=expo-reverse-tcp-demo",
+    "build": "turbo run build",
+    "build:plugin": "turbo run build --filter=expo-reverse-tcp",
+    "check": "bun run lint && bun run build && bun run test && bun run typecheck",
+    "format": "biome format --write .",
+    "ios": "turbo run ios --filter=expo-reverse-tcp-demo",
+    "lint": "biome check .",
+    "prepare": "lefthook install",
+    "start": "turbo run start --filter=expo-reverse-tcp-demo",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "web": "turbo run web --filter=expo-reverse-tcp-demo"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.14",
+    "@types/node": "^25.6.0",
+    "lefthook": "^2.1.6",
+    "turbo": "^2.9.9",
+    "typescript": "^6.0.3"
+  }
+}

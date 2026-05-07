@@ -1,0 +1,7 @@
+pre-commit:
+  parallel: true
+  jobs:
+    - name: biome format
+      glob: "**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx,json,jsonc,md}"
+      run: npx biome format --write {staged_files}
+      stage_fixed: true
