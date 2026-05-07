@@ -1,4 +1,4 @@
-name: Publish package
+name: Validate release tag
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - "v*"
 
 jobs:
-  publish:
+  validate-tag:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -37,15 +37,3 @@ jobs:
 
       - name: Run workspace checks
         run: bun run check
-
-      - name: Configure npm authentication
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Publish package
-        working-directory: packages/android-reverse-tcp
-        run: bun publish --access public
-        env:
-          NPM_CONFIG_TOKEN: ${{ secrets.NPM_TOKEN }}

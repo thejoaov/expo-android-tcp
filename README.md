@@ -82,8 +82,8 @@ That command:
 - refreshes `bun.lock`
 - creates and pushes a Git commit and tag such as `v1.0.0`
 
-There is also a dedicated GitHub Actions workflow with `workflow_dispatch` for maintainers who prefer releasing from the Actions UI. That workflow runs `release-it`, creates the version commit and tag, and then the publish workflow picks up the pushed `v*` tag.
+There is also a dedicated GitHub Actions workflow with `workflow_dispatch` for maintainers who prefer releasing from the Actions UI. That workflow runs `release-it`, creates and pushes the version commit and tag, and publishes the package in the same run.
 
-For non-dry-run releases from GitHub Actions, configure a repository secret named `RELEASE_TOKEN` with permission to push commits and tags. This is required because pushes made with the default `GITHUB_TOKEN` do not trigger the downstream publish workflow.
+The package is configured to use npm Trusted Publishers (OIDC) with `.github/workflows/release.yml`, so non-dry-run releases from GitHub Actions do not require an `NPM_TOKEN`. The workflow requests `id-token: write`, sets up Node.js 24+, upgrades npm, and publishes with `npm publish`.
 
-Publishing is handled by a separate GitHub Actions workflow after the matching tag is pushed, so the repo keeps the established Bun/Turbo/tsdown workflow while gaining a more organized release flow.
+The separate tag workflow validates `v*` tags pushed from outside GitHub Actions. Because npm Trusted Publishers are configured for `release.yml`, that tag workflow does not publish to npm.
