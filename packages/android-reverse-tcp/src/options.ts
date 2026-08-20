@@ -1,9 +1,16 @@
 export type AndroidReverseTcpPluginProps = {
-  ports: number[];
+  enabled?: boolean;
+  ports?: number[];
 };
 
 const MIN_PORT = 1;
 const MAX_PORT = 65_535;
+
+export function isPluginEnabled(
+  props: AndroidReverseTcpPluginProps | undefined,
+): boolean {
+  return props?.enabled !== false;
+}
 
 export function normalizePorts(
   props: AndroidReverseTcpPluginProps | undefined,

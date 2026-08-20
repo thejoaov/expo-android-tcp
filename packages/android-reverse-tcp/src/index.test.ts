@@ -1,6 +1,24 @@
 import { describe, expect, it } from "bun:test";
 
-import { applyGradleBlock, normalizePorts } from "./index";
+import plugin, {
+  applyGradleBlock,
+  isPluginEnabled,
+  normalizePorts,
+  removeGradleBlock,
+} from "./index";
+
+describe("isPluginEnabled", () => {
+  it("defaults to enabled", () => {
+    expect(isPluginEnabled(undefined)).toBe(true);
+    expect(isPluginEnabled({ ports: [3000] })).toBe(true);
+    expect(isPluginEnabled({ enabled: true, ports: [3000] })).toBe(true);
+  });
+
+  it("is disabled only when enabled is false", () => {
+    expect(isPluginEnabled({ enabled: false })).toBe(false);
+    expect(isPluginEnabled({ enabled: false, ports: [3000] })).toBe(false);
+  });
+});
 
 describe("normalizePorts", () => {
   it("deduplicates and preserves valid ports", () => {
@@ -68,5 +86,66 @@ describe("applyGradleBlock", () => {
     expect(result).toContain("def androidReverseTcpPorts = [3000, 3001, 3002]");
     expect(result).not.toContain("// @generated begin android-reverse-tcp");
     expect(result).not.toContain("def androidReverseTcpPorts = [1111]");
+  });
+});
+
+describe("removeGradleBlock", () => {
+  it("leaves source unchanged when no generated block exists", () => {
+    const source = 'android {\n    namespace "demo"\n}\n';
+
+    expect(removeGradleBlock(source)).toBe(source);
+  });
+
+  it("removes the generated block", () => {
+    const source = [
+      "android {",
+      '    namespace "demo"',
+      "}",
+      "",
+      "// @generated begin expo-reverse-tcp",
+      "def androidReverseTcpPorts = [3000]",
+      "// @generated end expo-reverse-tcp",
+      "",
+    ].join("\n");
+
+    const result = removeGradleBlock(source);
+
+    expect(result).toContain('namespace "demo"');
+    expect(result).not.toContain("// @generated begin expo-reverse-tcp");
+    expect(result).not.toContain("def androidReverseTcpPorts");
+  });
+
+  it("removes a legacy generated block", () => {
+    const source = [
+      "android {",
+      '    namespace "demo"',
+      "}",
+      "",
+      "// @generated begin android-reverse-tcp",
+      "def androidReverseTcpPorts = [3000]",
+      "// @generated end android-reverse-tcp",
+      "",
+    ].join("\n");
+
+    const result = removeGradleBlock(source);
+
+    expect(result).not.toContain("android-reverse-tcp");
+    expect(result).not.toContain("def androidReverseTcpPorts");
+  });
+});
+
+describe("plugin", () => {
+  it("can be disabled without a ports array", () => {
+    const config = { name: "demo", slug: "demo" };
+
+    expect(() => plugin(config, { enabled: false })).not.toThrow();
+  });
+
+  it("still requires ports when enabled", () => {
+    const config = { name: "demo", slug: "demo" };
+
+    expect(() => plugin(config, { enabled: true })).toThrow(
+      "The plugin requires a ports array",
+    );
   });
 });

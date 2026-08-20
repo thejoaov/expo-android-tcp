@@ -27,6 +27,20 @@ npx expo install expo-reverse-tcp
 }
 ```
 
+Set `enabled` to `false` to skip the plugin entirely, including native generation. Ports are not required when it is disabled:
+
+```js
+[
+  "expo-reverse-tcp",
+  {
+    enabled: process.env.CI !== "true",
+    ports: [3000, 3001, 3002],
+  },
+]
+```
+
+When disabled, the plugin does not inject Gradle and removes any previously generated `adb reverse` block so it does not remain in the Android project.
+
 ## Behavior
 
 For each configured port, the plugin generates Gradle code that runs:

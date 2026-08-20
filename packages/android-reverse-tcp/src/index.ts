@@ -3,8 +3,12 @@ import { createRequire } from "node:module";
 import type { ConfigPlugin } from "expo/config-plugins";
 import * as configPluginsModule from "expo/config-plugins";
 
-import { applyGradleBlock } from "./gradle";
-import { type AndroidReverseTcpPluginProps, normalizePorts } from "./options";
+import { applyGradleBlock, removeGradleBlock } from "./gradle";
+import {
+  type AndroidReverseTcpPluginProps,
+  isPluginEnabled,
+  normalizePorts,
+} from "./options";
 
 type ConfigPlugins = typeof import("expo/config-plugins") & {
   default?: typeof import("expo/config-plugins");
@@ -22,10 +26,18 @@ const pkg = require("../package.json") as {
   version: string;
 };
 
-const withAndroidReverseTcp: ConfigPlugin<AndroidReverseTcpPluginProps> = (
-  config,
-  props,
-) => {
+const withAndroidReverseTcp: ConfigPlugin<
+  AndroidReverseTcpPluginProps | undefined
+> = (config, props) => {
+  if (!isPluginEnabled(props)) {
+    return withAppBuildGradle(config, (modConfig) => {
+      modConfig.modResults.contents = removeGradleBlock(
+        modConfig.modResults.contents,
+      );
+      return modConfig;
+    });
+  }
+
   const ports = normalizePorts(props);
 
   return withAppBuildGradle(config, (modConfig) => {
@@ -50,4 +62,4 @@ export default createRunOncePlugin(
   pkg.version,
 );
 export type { AndroidReverseTcpPluginProps };
-export { applyGradleBlock, normalizePorts };
+export { applyGradleBlock, isPluginEnabled, normalizePorts, removeGradleBlock };

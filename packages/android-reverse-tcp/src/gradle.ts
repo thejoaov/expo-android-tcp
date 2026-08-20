@@ -38,19 +38,36 @@ export function applyGradleBlock(src: string, ports: number[]): string {
     "\n",
   );
 
-  for (const blockPattern of [
-    createBlockPattern(BEGIN_MARKER, END_MARKER),
-    createBlockPattern(
-      `// @generated begin ${LEGACY_PLUGIN_NAME}`,
-      `// @generated end ${LEGACY_PLUGIN_NAME}`,
-    ),
-  ]) {
+  for (const blockPattern of generatedBlockPatterns()) {
     if (blockPattern.test(src)) {
       return src.replace(blockPattern, nextBlock);
     }
   }
 
   return `${src.trimEnd()}\n\n${nextBlock}\n`;
+}
+
+export function removeGradleBlock(src: string): string {
+  const next = generatedBlockPatterns().reduce(
+    (current, pattern) => current.replace(pattern, ""),
+    src,
+  );
+
+  if (next === src) {
+    return src;
+  }
+
+  return `${next.replace(/\n{3,}/g, "\n\n").trimEnd()}\n`;
+}
+
+function generatedBlockPatterns(): RegExp[] {
+  return [
+    createBlockPattern(BEGIN_MARKER, END_MARKER),
+    createBlockPattern(
+      `// @generated begin ${LEGACY_PLUGIN_NAME}`,
+      `// @generated end ${LEGACY_PLUGIN_NAME}`,
+    ),
+  ];
 }
 
 function createBlockPattern(beginMarker: string, endMarker: string): RegExp {

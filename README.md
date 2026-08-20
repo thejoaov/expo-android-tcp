@@ -128,3 +128,5 @@ Then add it to your Expo config with the ports you need.
   }
 }
 ```
+
+Pass `enabled: false` to keep the plugin in the config without injecting it into the native Android build. Ports are optional in that case.
