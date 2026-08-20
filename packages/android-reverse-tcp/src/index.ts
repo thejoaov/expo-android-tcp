@@ -1,17 +1,18 @@
 import { createRequire } from "node:module";
 
-import type { ConfigPlugin } from "@expo/config-plugins";
-import * as configPluginsModule from "@expo/config-plugins";
+import type { ConfigPlugin } from "expo/config-plugins";
+import * as configPluginsModule from "expo/config-plugins";
 
 import { applyGradleBlock } from "./gradle";
 import { type AndroidReverseTcpPluginProps, normalizePorts } from "./options";
 
+type ConfigPlugins = typeof import("expo/config-plugins") & {
+  default?: typeof import("expo/config-plugins");
+};
+
 const configPlugins =
-  (
-    configPluginsModule as typeof import("@expo/config-plugins") & {
-      default?: typeof import("@expo/config-plugins");
-    }
-  ).default ?? (configPluginsModule as typeof import("@expo/config-plugins"));
+  (configPluginsModule as ConfigPlugins).default ??
+  (configPluginsModule as typeof import("expo/config-plugins"));
 
 const require = createRequire(import.meta.url);
 

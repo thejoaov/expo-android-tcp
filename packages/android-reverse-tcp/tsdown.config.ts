@@ -10,6 +10,7 @@ export default defineConfig({
     "!./**/*.test.ts",
     "!./**/*.md",
   ],
+  external: ["expo", /^expo\//, "@expo/config-plugins"],
   sourcemap: true,
   clean: true,
   dts: true,

@@ -106,10 +106,10 @@ This gives the repository a practical feedback loop: the same codebase contains 
 
 ## Use the published package
 
-If you only want to consume the plugin in another Expo project, install the package directly:
+If you only want to consume the plugin in another Expo project, install the package directly. It uses the config plugin APIs from your project's `expo` package, so it is not tied to a specific Expo SDK version:
 
 ```bash
-bun add expo-reverse-tcp
+npx expo install expo-reverse-tcp
 ```
 
 Then add it to your Expo config with the ports you need.

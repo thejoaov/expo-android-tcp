@@ -2,10 +2,12 @@
 
 `expo-reverse-tcp` is an Expo config plugin that injects Android Gradle logic to run `adb reverse` for a list of configured ports during local Android install flows.
 
+The plugin is not pinned to a specific Expo SDK version. It uses `expo/config-plugins` from the `expo` package already installed in your app.
+
 ## Install
 
 ```bash
-bun add expo-reverse-tcp
+npx expo install expo-reverse-tcp
 ```
 
 ## Usage
