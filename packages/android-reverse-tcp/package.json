@@ -1,6 +1,6 @@
 {
   "name": "expo-reverse-tcp",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Expo config plugin that runs adb reverse for configured TCP ports on local Android installs.",
   "bugs": {
     "url": "https://github.com/thejoaov/expo-android-tcp/issues"
