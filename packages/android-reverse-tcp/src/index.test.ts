@@ -1,4 +1,5 @@
 import { describe, expect, it } from "bun:test";
+import { createRequire } from "node:module";
 
 import plugin, {
   applyGradleBlock,
@@ -6,6 +7,8 @@ import plugin, {
   normalizePorts,
   removeGradleBlock,
 } from "./index";
+
+const require = createRequire(import.meta.url);
 
 describe("isPluginEnabled", () => {
   it("defaults to enabled", () => {
@@ -135,6 +138,14 @@ describe("removeGradleBlock", () => {
 });
 
 describe("plugin", () => {
+  it("resolves expo/config-plugins through CJS require", () => {
+    expect(() => require("expo/config-plugins")).not.toThrow();
+  });
+
+  it("loads from the Expo config plugin entry", () => {
+    expect(() => require("../app.plugin.js")).not.toThrow();
+  });
+
   it("can be disabled without a ports array", () => {
     const config = { name: "demo", slug: "demo" };
 

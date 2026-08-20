@@ -1,7 +1,6 @@
 import { createRequire } from "node:module";
 
 import type { ConfigPlugin } from "expo/config-plugins";
-import * as configPluginsModule from "expo/config-plugins";
 
 import { applyGradleBlock, removeGradleBlock } from "./gradle";
 import {
@@ -10,17 +9,12 @@ import {
   normalizePorts,
 } from "./options";
 
-type ConfigPlugins = typeof import("expo/config-plugins") & {
-  default?: typeof import("expo/config-plugins");
-};
-
-const configPlugins =
-  (configPluginsModule as ConfigPlugins).default ??
-  (configPluginsModule as typeof import("expo/config-plugins"));
-
 const require = createRequire(import.meta.url);
 
-const { createRunOncePlugin, withAppBuildGradle } = configPlugins;
+// CJS require keeps this SDK-agnostic: Expo's `expo/config-plugins` re-export
+// is extensionless CJS, which Node ESM cannot resolve without `.js`.
+const { createRunOncePlugin, withAppBuildGradle } =
+  require("expo/config-plugins") as typeof import("expo/config-plugins");
 const pkg = require("../package.json") as {
   name: string;
   version: string;
